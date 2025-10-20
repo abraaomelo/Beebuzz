@@ -13,6 +13,7 @@ public class FlowerPlant : MonoBehaviour
 
     [Header("Particles")]
     [SerializeField] public ParticleSystem pollenParticles;
+    [SerializeField] public PollenAttractor pollenAttractor;
     private ParticleSystem.EmissionModule emissionModule;
 
     private bool playerInRange = false;
@@ -71,6 +72,9 @@ public class FlowerPlant : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             playerInRange = true;
+            
+            pollenAttractor.attractionActive = true;
+
         }
     }
 
@@ -79,6 +83,7 @@ public class FlowerPlant : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             playerInRange = false;
+            pollenAttractor.attractionActive = false;
         }
     }
 }

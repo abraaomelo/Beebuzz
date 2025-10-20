@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 73421842}
   - component: {fileID: 73421844}
   - component: {fileID: 73421843}
+  - component: {fileID: 73421845}
   m_Layer: 0
   m_Name: PollenParticles
   m_TagString: Untagged
@@ -197,7 +198,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -303,7 +304,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -4953,6 +4954,22 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &73421845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 73421841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7565ff0cf2fed484fa913c73ac8d9231, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 318666302}
+  attractionSpeed: 5
+  ps: {fileID: 73421844}
+  attractionActive: 0
 --- !u!1 &109910751 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3881087803549984437, guid: ec536a7718376554185e4a856d5ae230, type: 3}
@@ -5121,9 +5138,10 @@ GameObject:
   - component: {fileID: 318666301}
   - component: {fileID: 318666303}
   - component: {fileID: 318666304}
+  - component: {fileID: 318666305}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5237,6 +5255,41 @@ MonoBehaviour:
   moveSpeed: 5
   touchJoystick: {fileID: 632642185}
   spriteRenderer: {fileID: 0}
+--- !u!58 &318666305
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318666300}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 2.18
 --- !u!1 &430070151
 GameObject:
   m_ObjectHideFlags: 0
@@ -5761,7 +5814,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &844578065
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5935,6 +5988,7 @@ GameObject:
   - component: {fileID: 1029112018}
   - component: {fileID: 1029112017}
   - component: {fileID: 1029112019}
+  - component: {fileID: 1029112020}
   m_Layer: 0
   m_Name: Flower(RED)
   m_TagString: Untagged
@@ -6017,16 +6071,53 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1029112016}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a9d4a625d2d94d1bb6a0b61b830e611, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   nectarAmount: 1
   regenerationTime: 5
+  collectSpeed: 1
   readyToCollect: 1
   producingNectar: 0
   pollenParticles: {fileID: 73421844}
+  pollenAttractor: {fileID: 73421845}
+--- !u!58 &1029112020
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1029112016}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1.53
 --- !u!1 &1268086594
 GameObject:
   m_ObjectHideFlags: 0
