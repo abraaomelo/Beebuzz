@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
-public class BeeHive : MonoBehaviour
+public class BeeHiveExit : MonoBehaviour
 {
+    [Header("Scene")]
+    public String sceneName;
     [Header("Shrink Settings")]
     public string targetTag = "Player";
     public float shrinkSpeed = 2f;     
@@ -62,7 +65,7 @@ public class BeeHive : MonoBehaviour
                 player.transform.localScale = targetScale;
                 isShrinking = false;
 
-                SceneFader.Instance.FadeToScene("Hive");
+                SceneFader.Instance.FadeToScene(sceneName);
             }
 
             yield return null;
