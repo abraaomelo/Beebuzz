@@ -3,7 +3,7 @@ using UnityEngine;
 public class PollenAttractor : MonoBehaviour
 {
     [SerializeField] public Transform target;
-    [SerializeField] public float attractionSpeed = 5f;
+    [SerializeField] public float attractionSpeed = 10f;
     [SerializeField] private ParticleSystem ps;
     private ParticleSystem.Particle[] particles;
     public bool attractionActive = false;

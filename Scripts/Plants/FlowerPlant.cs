@@ -4,8 +4,17 @@ using UnityEngine.UI;
 
 public class FlowerPlant : MonoBehaviour
 {
-    [Header("Nectar Settings")]
-    [Range(0f, 1f)] public float nectarAmount = 1f;
+    [Header("Specifics")]
+    public float collectedNectar;
+    public float collectedPollen;
+    public char pollenType; //Yellow / Blue / Red --- / Orange / Purple / Green
+    [SerializeField] public float nectarCapacity = 5f;
+    [SerializeField] public float pollenCapacity = 5f;
+
+
+    [Header("Flower Settings")]
+    [Range(0f, 100f)] public float nectarAmount = 1f;
+    [Range(0f, 100f)] public float pollenAmount = 1f;
     public float regenerationTime = 10f;
     public float collectSpeed = 0.2f;
 
@@ -43,7 +52,10 @@ public class FlowerPlant : MonoBehaviour
         if (playerInRange && readyToCollect)
         {
             CollectOverTime();
+
         }
+
+
     }
 
     void BarInitialState()
@@ -53,11 +65,25 @@ public class FlowerPlant : MonoBehaviour
         if (flowerBar != null)
             flowerBar.SetImmediate(1f);
     }
-
     void CollectOverTime()
     {
-        nectarAmount -= collectSpeed * Time.deltaTime;
+
+        float drain = collectSpeed * Time.deltaTime;
+        nectarAmount -= drain;
+        pollenAmount -= drain;
+
         nectarAmount = Mathf.Clamp01(nectarAmount);
+        pollenAmount = Mathf.Clamp01(pollenAmount);
+
+        float drainedNectarValue = nectarCapacity * drain;
+        float drainedPollenValue = pollenCapacity * drain;
+
+        collectedNectar += drainedNectarValue;
+        collectedPollen += drainedPollenValue;
+
+        GameController.Instance.AddNectar(drainedNectarValue);
+        GameController.Instance.AddPollen(drainedPollenValue);
+
         UpdateParticleEmission();
 
         if (nectarAmount <= 0f)
@@ -67,8 +93,10 @@ public class FlowerPlant : MonoBehaviour
 
             if (regenCoroutine != null)
                 StopCoroutine(regenCoroutine);
-
             regenCoroutine = StartCoroutine(RegenerateNectar());
+
+            collectedNectar = 0f;
+            collectedPollen = 0f;
         }
     }
 
@@ -76,7 +104,7 @@ public class FlowerPlant : MonoBehaviour
     {
         if (pollenParticles != null)
             emissionModule.rateOverTime = 0f;
-
+        Debug.Log(GameController.Instance.pollen.amount.ToString());
         if (flowerCanvas != null)
             flowerCanvas.enabled = true;
 
@@ -131,23 +159,25 @@ public class FlowerPlant : MonoBehaviour
         {
             playerInRange = false;
             if (pollenAttractor != null) pollenAttractor.attractionActive = false;
+
         }
     }
 
-    public void ReduceNectar(float amount)
-    {
-        if (!readyToCollect) return;
+    //PUBLIC METHOD
+    // public void ReduceNectar(float amount)
+    // {
+    //     if (!readyToCollect) return;
 
-        nectarAmount -= amount;
-        nectarAmount = Mathf.Clamp01(nectarAmount);
-        UpdateParticleEmission();
+    //     nectarAmount -= amount;
+    //     nectarAmount = Mathf.Clamp01(nectarAmount);
+    //     UpdateParticleEmission();
 
-        if (nectarAmount <= 0f)
-        {
-            readyToCollect = false;
-            producingNectar = true;
-            if (regenCoroutine != null) StopCoroutine(regenCoroutine);
-            regenCoroutine = StartCoroutine(RegenerateNectar());
-        }
-    }
+    //     if (nectarAmount <= 0f)
+    //     {
+    //         readyToCollect = false;
+    //         producingNectar = true;
+    //         if (regenCoroutine != null) StopCoroutine(regenCoroutine);
+    //         regenCoroutine = StartCoroutine(RegenerateNectar());
+    //     }
+    // }
 }
