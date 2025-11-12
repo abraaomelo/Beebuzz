@@ -3,7 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class Resource
 {
-    public string resourceName;
+    public string resourceName; 
     public float amount;
 
     public Resource(string name, float startAmount = 0)
@@ -22,3 +22,4 @@ public class Resource
         amount = Mathf.Max(0, amount - value);
     }
 }
+

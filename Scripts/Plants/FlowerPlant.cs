@@ -4,10 +4,11 @@ using UnityEngine.UI;
 
 public class FlowerPlant : MonoBehaviour
 {
+
     [Header("Specifics")]
     public float collectedNectar;
     public float collectedPollen;
-    public char pollenType; //Yellow / Blue / Red --- / Orange / Purple / Green
+    [SerializeField] public PollenType pollenType; 
     [SerializeField] public float nectarCapacity = 5f;
     [SerializeField] public float pollenCapacity = 5f;
 
@@ -52,10 +53,7 @@ public class FlowerPlant : MonoBehaviour
         if (playerInRange && readyToCollect)
         {
             CollectOverTime();
-
         }
-
-
     }
 
     void BarInitialState()
@@ -67,6 +65,8 @@ public class FlowerPlant : MonoBehaviour
     }
     void CollectOverTime()
     {
+        if (!readyToCollect || producingNectar)
+        return;
 
         float drain = collectSpeed * Time.deltaTime;
         nectarAmount -= drain;
@@ -82,7 +82,7 @@ public class FlowerPlant : MonoBehaviour
         collectedPollen += drainedPollenValue;
 
         GameController.Instance.AddNectar(drainedNectarValue);
-        GameController.Instance.AddPollen(drainedPollenValue);
+        GameController.Instance.AddPollen(pollenType, drainedPollenValue);
 
         UpdateParticleEmission();
 
@@ -93,18 +93,19 @@ public class FlowerPlant : MonoBehaviour
 
             if (regenCoroutine != null)
                 StopCoroutine(regenCoroutine);
-            regenCoroutine = StartCoroutine(RegenerateNectar());
+            regenCoroutine = StartCoroutine(RegenerateFlower());
 
             collectedNectar = 0f;
             collectedPollen = 0f;
         }
     }
 
-    IEnumerator RegenerateNectar()
+    IEnumerator RegenerateFlower()
     {
         if (pollenParticles != null)
             emissionModule.rateOverTime = 0f;
-        Debug.Log(GameController.Instance.pollen.amount.ToString());
+        
+        
         if (flowerCanvas != null)
             flowerCanvas.enabled = true;
 
@@ -162,22 +163,4 @@ public class FlowerPlant : MonoBehaviour
 
         }
     }
-
-    //PUBLIC METHOD
-    // public void ReduceNectar(float amount)
-    // {
-    //     if (!readyToCollect) return;
-
-    //     nectarAmount -= amount;
-    //     nectarAmount = Mathf.Clamp01(nectarAmount);
-    //     UpdateParticleEmission();
-
-    //     if (nectarAmount <= 0f)
-    //     {
-    //         readyToCollect = false;
-    //         producingNectar = true;
-    //         if (regenCoroutine != null) StopCoroutine(regenCoroutine);
-    //         regenCoroutine = StartCoroutine(RegenerateNectar());
-    //     }
-    // }
 }

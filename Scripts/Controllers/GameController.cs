@@ -1,12 +1,14 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
+using System;
+using System.Text; 
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
     [Header("Resources")]
-    public Resource pollen = new Resource("Pollen");
+    public Dictionary<PollenType, Resource> pollenResources = new Dictionary<PollenType, Resource>();
     public Resource nectar = new Resource("Nectar");
     public Resource honey = new Resource("Honey");
 
@@ -16,6 +18,11 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            foreach (PollenType type in Enum.GetValues(typeof(PollenType)))
+            {
+                pollenResources.Add(type, new Resource($"Pollen_{type}"));
+            }
         }
         else
         {
@@ -25,26 +32,43 @@ public class GameController : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        PlayerPrefs.SetFloat("pollen", pollen.amount);
         PlayerPrefs.SetFloat("nectar", nectar.amount);
         PlayerPrefs.SetFloat("honey", honey.amount);
+
+        foreach (var kvp in pollenResources)
+        {
+            PlayerPrefs.SetFloat($"pollen_{kvp.Key}", kvp.Value.amount);
+        }
+        PlayerPrefs.Save();
     }
 
     private void Start()
     {
-        pollen.amount = PlayerPrefs.GetFloat("pollen", 0);
         nectar.amount = PlayerPrefs.GetFloat("nectar", 0);
         honey.amount = PlayerPrefs.GetFloat("honey", 0);
+
+        foreach (PollenType type in Enum.GetValues(typeof(PollenType)))
+        {
+            if (pollenResources.TryGetValue(type, out Resource resource))
+            {
+                resource.amount = PlayerPrefs.GetFloat($"pollen_{type}", 0);
+            }
+        }
+
         UpdateUI();
     }
-
-    public void AddPollen(float value)
+    public void AddPollen(PollenType type, float value)
     {
-
-        pollen.Add(value);
-        UpdateUI();
+        if (pollenResources.TryGetValue(type, out Resource resource))
+        {
+            resource.Add(value);  
+            UpdateUI();
+        }
+        else
+        {
+            Debug.LogError($"Attempted to add pollen of unknown type: {type}");
+        }
     }
-
     public void AddNectar(float value)
     {
         nectar.Add(value);
@@ -71,9 +95,16 @@ public class GameController : MonoBehaviour
 
     [SerializeField] public TextMeshProUGUI nectarInventory;
     [SerializeField] public TextMeshProUGUI pollenInventory;
+
     public void ShowPollenNectar()
     {
-        Debug.Log("Pollen: " + pollen.amount);
+        float totalPollen = 0;
+        foreach(var resource in pollenResources.Values)
+        {
+            totalPollen += resource.amount;
+            Debug.Log($"Pollen ({resource.resourceName}): {resource.amount}");
+        }
+        Debug.Log("Total Pollen: " + totalPollen);
         Debug.Log("Nectar: " + nectar.amount);
     }
 
@@ -81,23 +112,47 @@ public class GameController : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
-
-        pollen.amount = 0;
+        foreach (var resource in pollenResources.Values)
+        {
+            resource.amount = 0;
+        }
         nectar.amount = 0;
         honey.amount = 0;
-        Debug.Log("Data cleamed");
-
+        UpdateUI();
     }
-    void UpdateUI()
+    public void UpdateUI()
     {
-        // nectarInventory.text = "Nectar: "+nectar.amount.ToString();
-        // pollenInventory.text = "Pollen: "+pollen.amount.ToString();
         int roundedNectar = Mathf.RoundToInt(nectar.amount);
-        int roundedPollen = Mathf.RoundToInt(pollen.amount);
-
         nectarInventory.text = $"Nectar: {roundedNectar}";
-        pollenInventory.text = $"Pollen: {roundedPollen}";
-    }
+        StringBuilder pollenTextBuilder = new StringBuilder();
 
+        foreach (var kvp in pollenResources)
+        {
+            float amount = kvp.Value.amount;
+            if (amount > 0)
+            {
+                int roundedPollen = Mathf.RoundToInt(amount);
+                pollenTextBuilder.AppendLine($"{kvp.Key} Pollen: {roundedPollen}");
+            }
+        }
+        if (pollenTextBuilder.Length == 0)
+        {
+            pollenInventory.text = "Pollen: 0";
+        }
+        else
+        {
+            pollenInventory.text = pollenTextBuilder.ToString().Trim();
+        }
+    }
+    
+    public void AddAllPollens()
+    {
+        float value = 1000f;
+    foreach (var kvp in pollenResources)
+    {
+        kvp.Value.Add(value);
+    }
+    UpdateUI();
+}
     #endregion
 }

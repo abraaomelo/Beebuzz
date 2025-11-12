@@ -28,7 +28,6 @@ public class TouchJoystick : MonoBehaviour, IDragHandler, IPointerDownHandler, I
 
         inputVector = new Vector2(pos.x, pos.y);
         inputVector = (inputVector.magnitude > 1f) ? inputVector.normalized : inputVector;
-
         // Move o handle
         handle.anchoredPosition = new Vector2(
             inputVector.x * (background.sizeDelta.x / 2.5f),

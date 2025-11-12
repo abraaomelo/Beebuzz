@@ -35,8 +35,6 @@ public class BeeHiveExit : MonoBehaviour
     {
         isShrinking = true;
         Vector3 targetScale = Vector3.one * minScale;
-
-        //Deactivate physics, need to control the object mannually.
         Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
