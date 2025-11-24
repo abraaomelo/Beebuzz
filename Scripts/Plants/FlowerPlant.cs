@@ -81,8 +81,8 @@ public class FlowerPlant : MonoBehaviour
         collectedNectar += drainedNectarValue;
         collectedPollen += drainedPollenValue;
 
-        GameController.Instance.AddNectar(drainedNectarValue);
-        GameController.Instance.AddPollen(pollenType, drainedPollenValue);
+        BeeInventory.Instance.AddNectar(drainedNectarValue);
+        BeeInventory.Instance.AddPollen(pollenType, drainedPollenValue);
 
         UpdateParticleEmission();
 
