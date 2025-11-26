@@ -17,7 +17,7 @@ public class PollenAttractor : MonoBehaviour
 
     void LateUpdate()
     {
-        if (target == null || !attractionActive) return;
+        if (target == null || !attractionActive || BeeInventory.Instance.ReachedMaxLoad()) return;
 
         int aliveCount = ps.GetParticles(particles);
         for (int i = 0; i < aliveCount; i++)

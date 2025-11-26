@@ -50,7 +50,7 @@ public class FlowerPlant : MonoBehaviour
 
     void Update()
     {
-        if (playerInRange && readyToCollect)
+        if (playerInRange && readyToCollect && !BeeInventory.Instance.ReachedMaxLoad())
         {
             CollectOverTime();
         }
