@@ -103,8 +103,6 @@ public class DeadFlower : MonoBehaviour
         {
             float needed = req.amount - progress[req.type];
             if (needed <= 0f) continue;
-            //66
-            //if (GameController.Instance.pollenResources.TryGetValue(req.type, out Resource resource))
             if (BeeInventory.Instance.pollenResources.TryGetValue(req.type, out Resource resource))
             {
                 float available = resource.amount;
@@ -115,7 +113,7 @@ public class DeadFlower : MonoBehaviour
                 progress[req.type] += use;
                 anyUsed = true;
 
-                BeeInventory.Instance.UpdateUI();
+                BeeInventory.Instance.RecalculateStoredResource();
             }
         }
 

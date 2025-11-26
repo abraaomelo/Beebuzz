@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using TMPro;
-using System.Text; 
+using System.Text;
 
 public class BeeInventory : MonoBehaviour
 {
     [Header("Inventory Capacity")]
-    public float maxCapacity = 50f;
+    public float maxCapacity = 5000f;
+    public float storedResource;
 
     [Header("Stored Resources")]
     public Dictionary<PollenType, Resource> pollenResources = new Dictionary<PollenType, Resource>();
@@ -28,6 +29,7 @@ public class BeeInventory : MonoBehaviour
     private void GetResources()
     {
         nectar.amount = PlayerPrefs.GetFloat("nectar", 0);
+        //storedResource = nectar.amount;
         honey.amount = PlayerPrefs.GetFloat("honey", 0);
 
         foreach (PollenType type in Enum.GetValues(typeof(PollenType)))
@@ -35,15 +37,34 @@ public class BeeInventory : MonoBehaviour
             if (pollenResources.TryGetValue(type, out Resource resource))
             {
                 resource.amount = PlayerPrefs.GetFloat($"pollen_{type}", 0);
+                // storedResource += resource.amount;
             }
         }
-
-        UpdateUI();
+        RecalculateStoredResource();
+        //UpdateUI();
     }
+
+    public void RecalculateStoredResource()
+    {
+        storedResource = nectar.amount;
+
+        foreach (PollenType type in Enum.GetValues(typeof(PollenType)))
+        {
+            if (pollenResources.TryGetValue(type, out Resource resource))
+                storedResource += resource.amount;
+        }
+    }
+
+    public bool ReachedMaxLoad()
+    {
+        if (storedResource >= maxCapacity) return true;
+        else return false;
+    }
+
 
     void InstanceInventory()
     {
-         if (Instance == null)
+        if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
@@ -75,8 +96,8 @@ public class BeeInventory : MonoBehaviour
     {
         if (pollenResources.TryGetValue(type, out Resource resource))
         {
-            resource.Add(value);  
-            UpdateUI();
+            resource.Add(value);
+            // UpdateUI();
         }
         else
         {
@@ -86,7 +107,8 @@ public class BeeInventory : MonoBehaviour
     public void AddNectar(float value)
     {
         nectar.Add(value);
-        UpdateUI();
+        RecalculateStoredResource();
+        // UpdateUI();
     }
     public float GetNectar()
     {
@@ -96,13 +118,13 @@ public class BeeInventory : MonoBehaviour
     public void AddHoney(float value)
     {
         honey.Add(value);
-        UpdateUI();
+        //  UpdateUI();
     }
 
     public void UseNectar(float value)
     {
         nectar.Subtract(value);
-        UpdateUI();
+        // UpdateUI();
     }
 
     #region DEBUG
@@ -112,14 +134,8 @@ public class BeeInventory : MonoBehaviour
 
     public void ShowPollenNectar()
     {
-        float totalPollen = 0;
-        foreach(var resource in pollenResources.Values)
-        {
-            totalPollen += resource.amount;
-            Debug.Log($"Pollen ({resource.resourceName}): {resource.amount}");
-        }
-        Debug.Log("Total Pollen: " + totalPollen);
-        Debug.Log("Nectar: " + nectar.amount);
+        Debug.Log("TOTAL carregado: " + storedResource);
+        Debug.Log("Bolsa cheia? " + ReachedMaxLoad());
     }
 
     public void DeleteData()
@@ -132,7 +148,7 @@ public class BeeInventory : MonoBehaviour
         }
         nectar.amount = 0;
         honey.amount = 0;
-        UpdateUI();
+        RecalculateStoredResource();
     }
     public void UpdateUI()
     {
@@ -158,16 +174,17 @@ public class BeeInventory : MonoBehaviour
             pollenInventory.text = pollenTextBuilder.ToString().Trim();
         }
     }
-    
+
     public void AddAllPollens()
     {
         float value = 1000f;
-    foreach (var kvp in pollenResources)
-    {
-        kvp.Value.Add(value);
+        foreach (var kvp in pollenResources)
+        {
+            kvp.Value.Add(value);
+        }
+        RecalculateStoredResource();
+        // UpdateUI();
     }
-    UpdateUI();
-}
     #endregion 
 
 }
