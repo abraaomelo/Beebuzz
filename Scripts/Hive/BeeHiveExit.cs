@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BeeHiveExit : MonoBehaviour
 {
@@ -8,29 +9,40 @@ public class BeeHiveExit : MonoBehaviour
     public String sceneName;
     [Header("Shrink Settings")]
     public string targetTag = "Player";
-    public float shrinkSpeed = 2f;     
-    public float minScale = 0.2f;     
-    public float moveSpeed = 3f;      
-    public Transform hiveHole;        
+    public float shrinkSpeed = 2f;
+    public float minScale = 0.2f;
+    public float moveSpeed = 3f;
+    public Transform hiveHole;
     private GameObject player;
     private bool isShrinking = false;
+    public Button buttonInteractHive;
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag(targetTag);
+
+        if (buttonInteractHive != null)
+            buttonInteractHive.gameObject.SetActive(false);
+
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void HiveHoleButtonAction()
     {
-        if (collision.CompareTag("Player"))
+        GameObject joystick = GameObject.FindGameObjectWithTag("Joystick");
+        if (joystick != null) joystick.SetActive(false);
+        StartCoroutine(MoveAndShrinkToHiveHole());
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
         {
-            GameObject joystick = GameObject.FindGameObjectWithTag("Joystick");
-            if (joystick != null) joystick.SetActive(false);
-
-            StartCoroutine(MoveAndShrinkToHiveHole());
+            buttonInteractHive.gameObject.SetActive(true);
         }
     }
 
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player")) buttonInteractHive.gameObject.SetActive(false);
+    }
     private IEnumerator MoveAndShrinkToHiveHole()
     {
         isShrinking = true;

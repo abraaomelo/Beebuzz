@@ -42,7 +42,7 @@ public class BeeInventoryUI : MonoBehaviour
 
         // nectar
         int roundedNectar = Mathf.RoundToInt(BeeInventory.Instance.GetNectar());
-        nectarInventory.text = "Collected Nectar: " + roundedNectar;
+        nectarInventory.text = "Collected    Nectar          " + roundedNectar;
 
         // pollen
         foreach (var entry in pollenTextRefs)

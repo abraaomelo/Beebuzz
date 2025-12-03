@@ -59,12 +59,6 @@ public class DeadFlower : MonoBehaviour
             InGameUIController.Instance.ShowPollinateButton(true);
             InGameUIController.Instance.currentFlower = this;
         }
-
-
-        // foreach (var req in requiredPollens)
-        // {
-        //     Debug.Log($"   - {req.type}: precisa {req.amount}, já contribuiu {progress[req.type]}");
-        // }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -85,18 +79,6 @@ public class DeadFlower : MonoBehaviour
 
     public void Pollinate()
     {
-        // if (evolving)
-        // {
-        //     Debug.Log("Flower is evolving");
-        //     return;
-        // }
-
-        // if (!playerInRange)
-        // {
-        //     Debug.Log("🚫 Jogador não está próximo da flor!");
-        //     return;
-        // }
-
         bool anyUsed = false;
 
         foreach (var req in requiredPollens)

@@ -7,9 +7,9 @@ public class InGameUIController : MonoBehaviour
 
     [Header("UI Elements")]
     public Button pollinateButton;
+    public Button storeNectarButton;
 
     [HideInInspector] public DeadFlower currentFlower;
-
     private void Awake()
     {
         if (Instance == null)
@@ -21,6 +21,7 @@ public class InGameUIController : MonoBehaviour
     void Start()
     {
         ShowPollinateButton(false);
+        ShowStoreNectarButton(false);
 
         if (pollinateButton != null)
         {
@@ -29,10 +30,6 @@ public class InGameUIController : MonoBehaviour
                 if (currentFlower != null)
                 {
                     currentFlower.Pollinate();
-                }
-                else
-                {
-                    Debug.Log("Nenhuma flor próxima para polinizar.");
                 }
             });
         }
@@ -43,6 +40,14 @@ public class InGameUIController : MonoBehaviour
         if (pollinateButton != null)
         {
             pollinateButton.gameObject.SetActive(state);
+        }
+    }
+
+    public void ShowStoreNectarButton(bool state)
+    {
+        if (storeNectarButton != null)
+        {
+            storeNectarButton.gameObject.SetActive(state);
         }
     }
 }

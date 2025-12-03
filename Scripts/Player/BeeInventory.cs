@@ -92,6 +92,18 @@ public class BeeInventory : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public void SaveInventory()
+    {
+        PlayerPrefs.SetFloat("nectar", nectar.amount);
+        PlayerPrefs.SetFloat("honey", honey.amount);
+
+        foreach (var kvp in pollenResources)
+            PlayerPrefs.SetFloat($"pollen_{kvp.Key}", kvp.Value.amount);
+
+        PlayerPrefs.Save();
+    }
+
+
     public void AddPollen(PollenType type, float value)
     {
         if (pollenResources.TryGetValue(type, out Resource resource))
@@ -103,12 +115,13 @@ public class BeeInventory : MonoBehaviour
         {
             Debug.LogError($"Attempted to add pollen of unknown type: {type}");
         }
+        SaveInventory();
     }
     public void AddNectar(float value)
     {
         nectar.Add(value);
         RecalculateStoredResource();
-        // UpdateUI();
+        SaveInventory();
     }
     public float GetNectar()
     {
@@ -118,14 +131,40 @@ public class BeeInventory : MonoBehaviour
     public void AddHoney(float value)
     {
         honey.Add(value);
-        //  UpdateUI();
+        SaveInventory();
     }
 
     public void UseNectar(float value)
     {
         nectar.Subtract(value);
-        // UpdateUI();
+        SaveInventory();
     }
+
+    public void TransferAllNectarToTank()
+    {
+        if (nectar.amount <= 0)
+        {
+            Debug.Log("[Inventory] No nectar to transfer.");
+            return;
+        }
+
+        float amountToTransfer = nectar.amount;
+
+        if (BeeHiveTank.Instance == null)
+        {
+            Debug.LogError("[Inventory] HiveTank Instance NOT FOUND!");
+            return;
+        }
+        BeeHiveTank.Instance.AddNectar(amountToTransfer);
+        nectar.amount = 0;
+
+        PlayerPrefs.SetFloat("nectar", 0);
+        PlayerPrefs.Save();
+
+        RecalculateStoredResource();
+        SaveInventory();
+    }
+
 
     #region DEBUG
 
@@ -149,6 +188,7 @@ public class BeeInventory : MonoBehaviour
         nectar.amount = 0;
         honey.amount = 0;
         RecalculateStoredResource();
+        SaveInventory();
     }
     public void UpdateUI()
     {
@@ -178,12 +218,13 @@ public class BeeInventory : MonoBehaviour
     public void AddAllPollens()
     {
         float value = 1000f;
+        nectar.Add(value);
         foreach (var kvp in pollenResources)
         {
             kvp.Value.Add(value);
         }
         RecalculateStoredResource();
-        // UpdateUI();
+        SaveInventory();
     }
     #endregion 
 
