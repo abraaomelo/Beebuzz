@@ -31,7 +31,7 @@ public class BeeFeedWorker : MonoBehaviour
         isWorking = true;
 
         yield return StartCoroutine(MoveTo(tankLocation.position));
-        Debug.Log("[Worker] Collecting nectar...");
+        Debug.Log("[Worker] Collecting nectar");
         yield return new WaitForSeconds(collectingTimeNeeded);
         float amountExtracted = CollectFromTank();
         Debug.Log($"[Worker] Extracted {amountExtracted} nectar");
