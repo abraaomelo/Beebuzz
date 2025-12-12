@@ -53,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
             finalInput = touchJoystick.GetInput();
         }
 #endif
-        rb.velocity = finalInput * moveSpeed;
+        rb.linearVelocity = finalInput * moveSpeed;
 
         if (finalInput.x > 0.01f)
         {

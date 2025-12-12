@@ -14,7 +14,7 @@ public class BeeHiveTank : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            LoadTankData();   // <-- CARREGA AO INICIAR
+            LoadTankData();
         }
         else
         {
